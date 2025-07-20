@@ -18,8 +18,8 @@ public class CourseController {
 
     private final CourseService courseService;
 
-//    @GetMapping
-//    public ResponseEntity<List<CourseDto>> getCourses(@RequestBody RequestDto requestDto) {
-//
-//    }
+    @GetMapping
+    public ResponseEntity<List<CourseDto>> getCourses(@RequestBody RequestDto requestDto) {
+        return ResponseEntity.ok(this.courseService.getCoursesByGroupAndDay(requestDto));
+    }
 }

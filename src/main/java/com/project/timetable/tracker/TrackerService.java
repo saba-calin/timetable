@@ -1,6 +1,7 @@
 package com.project.timetable.tracker;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -13,6 +14,10 @@ public class TrackerService {
 
     public void addTracker(TrackerEntity trackerEntity) {
         this.trackerRepository.save(trackerEntity);
+    }
+
+    public void deleteByGroupName(String groupName) {
+        this.trackerRepository.deleteByGroupName(groupName);
     }
 
     public boolean hasTimetableChanged(String checksum, String group) {

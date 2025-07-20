@@ -62,6 +62,9 @@ public class ParserService {
                 continue;
             }
 
+            this.courseService.deleteByGroupName(groups.get(i));
+            this.trackerService.deleteByGroupName(groups.get(i));
+
             TrackerEntity trackerEntity = TrackerEntity.builder()
                     .groupName(groups.get(i))
                     .checksum(checksum)

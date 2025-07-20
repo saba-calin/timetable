@@ -5,7 +5,7 @@ import lombok.Data;
 @Data
 public class RequestDto {
 
-    private String group;
+    private String semiGroup;
 
     private String day;
 }
