@@ -6,13 +6,23 @@ export default function LandingPage() {
     const [timetable, setTimetable] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [dayName, setDayName] = useState("");
 
-    const getTodayDate = () => {
+    const getToday = () => {
         const today = new Date();
         const yyyy = today.getFullYear();
         const mm = String(today.getMonth() + 1).padStart(2, "0");
         const dd = String(today.getDate()).padStart(2, "0");
-        return `${yyyy}-${mm}-${dd}`;
+
+        const dayIndex = today.getDay(); // 0 = Sunday, 1 = Monday, ...
+        const dayNameRO = [
+            "Duminica", "Luni", "Marti", "Miercuri", "Joi", "Vineri", "Sambata"
+        ][dayIndex];
+
+        return {
+            formattedDate: `${yyyy}-${mm}-${dd}`,
+            dayNameRO,
+        };
     };
 
     const fetchTimetable = async () => {
@@ -20,14 +30,17 @@ export default function LandingPage() {
         setLoading(true);
         setError("");
         setTimetable([]);
-        const today = getTodayDate();
+
+        const { formattedDate, dayNameRO } = getToday();
 
         try {
-            const res = await axios.get("http://localhost:8080/api/v1/course", {
+            const res = await axios.post("http://localhost:8080/api/v1/course", {
                 semiGroup: group,
-                day: today,
+                day: 'Vineri',
             });
+            console.log(res.data);
             setTimetable(res.data);
+            setDayName(dayNameRO);
         } catch (err) {
             setError("Could not fetch timetable. Please check the group name.");
         } finally {
@@ -65,7 +78,7 @@ export default function LandingPage() {
                 {timetable.length > 0 && (
                     <div className="mt-6">
                         <h2 className="text-xl font-semibold mb-4 text-gray-700">
-                            Timetable for {group.toUpperCase()}
+                            Orar pentru {group.toUpperCase()} - {dayName}
                         </h2>
                         <ul className="space-y-3">
                             {timetable.map((course, index) => (

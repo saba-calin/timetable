@@ -4,10 +4,7 @@ import com.project.timetable.dto.CourseDto;
 import com.project.timetable.dto.RequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -18,7 +15,7 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @GetMapping
+    @PostMapping
     public ResponseEntity<List<CourseDto>> getCourses(@RequestBody RequestDto requestDto) {
         return ResponseEntity.ok(this.courseService.getCoursesByGroupAndDay(requestDto));
     }
