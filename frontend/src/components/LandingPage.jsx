@@ -3,26 +3,36 @@ import axios from "axios";
 
 export default function LandingPage() {
     const [group, setGroup] = useState("");
+    const [timetableGroup, setTimetableGroup] = useState("");
     const [timetable, setTimetable] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const [dayName, setDayName] = useState("");
 
+    function convertDayROtoEN(dayRO) {
+        const mapping = {
+            Duminica: "Sunday",
+            Luni: "Monday",
+            Marti: "Tuesday",
+            Miercuri: "Wednesday",
+            Joi: "Thursday",
+            Vineri: "Friday",
+            Sambata: "Saturday",
+        };
+
+        return mapping[dayRO] || dayRO; // fallback returns original if not found
+    }
+
+
     const getToday = () => {
         const today = new Date();
-        const yyyy = today.getFullYear();
-        const mm = String(today.getMonth() + 1).padStart(2, "0");
-        const dd = String(today.getDate()).padStart(2, "0");
 
         const dayIndex = today.getDay(); // 0 = Sunday, 1 = Monday, ...
         const dayNameRO = [
             "Duminica", "Luni", "Marti", "Miercuri", "Joi", "Vineri", "Sambata"
         ][dayIndex];
 
-        return {
-            formattedDate: `${yyyy}-${mm}-${dd}`,
-            dayNameRO,
-        };
+        return dayNameRO;
     };
 
     const fetchTimetable = async () => {
@@ -31,16 +41,18 @@ export default function LandingPage() {
         setError("");
         setTimetable([]);
 
-        const { formattedDate, dayNameRO } = getToday();
+        const dayNameRO = getToday();
 
         try {
             const res = await axios.post("http://localhost:8080/api/v1/course", {
                 semiGroup: group,
-                day: 'Vineri',
+                // day: dayNameRO
+                day: "Luni"
             });
             console.log(res.data);
             setTimetable(res.data);
-            setDayName(dayNameRO);
+            setDayName(convertDayROtoEN(dayNameRO));
+            setTimetableGroup(group);
         } catch (err) {
             setError("Could not fetch timetable. Please check the group name.");
         } finally {
@@ -55,9 +67,18 @@ export default function LandingPage() {
                     Daily Timetable
                 </h1>
 
+                <div className="mb-6 text-center">
+                    <h2 className="text-2xl font-extrabold text-indigo-900 mb-2">
+                        Tired of hunting for your daily schedule?
+                    </h2>
+                    <p className="text-indigo-700 text-sm max-w-md mx-auto">
+                        Get your group’s timetable in just one click — no fuss, no stress.
+                    </p>
+                </div>
+
                 <input
                     type="text"
-                    placeholder="Enter your group (e.g., 217)"
+                    placeholder="Enter your group (e.g., 217, 926/2)"
                     className="w-full p-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-400 mb-4"
                     value={group}
                     onChange={(e) => setGroup(e.target.value)}
@@ -75,10 +96,10 @@ export default function LandingPage() {
                     <div className="text-red-600 text-sm mt-4 text-center">{error}</div>
                 )}
 
-                {timetable.length > 0 && (
+                {timetable.length > 0 ? (
                     <div className="mt-6">
                         <h2 className="text-xl font-semibold mb-4 text-gray-700">
-                            Orar pentru {group.toUpperCase()} - {dayName}
+                            Timetable for {timetableGroup.toUpperCase()} - {dayName}
                         </h2>
                         <ul className="space-y-3">
                             {timetable.map((course, index) => (
@@ -99,14 +120,19 @@ export default function LandingPage() {
                                         <strong>Professor:</strong> {course.professor}
                                     </div>
                                     <div className="text-xs text-gray-500 mt-1">
-                                        Frequency: {course.frequency} | Formation:{" "}
-                                        {course.formation}
+                                        Frequency: {course.frequency} | Formation: {course.formation}
                                     </div>
                                 </li>
                             ))}
                         </ul>
                     </div>
+                ) : !loading && dayName && (
+                    <div className="mt-6 text-center text-lg text-indigo-800">
+                        <div className="text-4xl mb-2">🏖️</div>
+                        <p>No classes for {dayName}! Enjoy your free time 😎</p>
+                    </div>
                 )}
+
             </div>
         </div>
     );
