@@ -19,13 +19,22 @@ public interface CourseRepository extends JpaRepository<CourseEntity, Long> {
     """, nativeQuery = true)
     void deleteByGroupName(@Param("groupName") String groupName);
 
-    @Query("""
-        SELECT s
-        FROM session s
-        WHERE (s.formation = :group OR s.formation = :semiGroup) AND s.day = :day
-        ORDER BY s.hour ASC
-    """)
-    List<CourseEntity> getCoursesByDayAndGroup(@Param("day") String day,
+    @Query(value = """
+        SELECT *
+        FROM session
+        WHERE (formation = :semiGroup OR formation = :group) AND day = :day
+        ORDER BY CAST(SPLIT_PART(hour, '-', 1) AS INTEGER) ASC
+    """, nativeQuery = true)
+    List<CourseEntity> getCoursesByDayAndGroupAndSemigroup(@Param("day") String day,
                                                @Param("group") String group,
                                                @Param("semiGroup") String semiGroup);
+
+    @Query(value = """
+        SELECT *
+        FROM session
+        WHERE formation LIKE CONCAT('%', :group, '%') AND day = :day
+        ORDER BY CAST(SPLIT_PART(hour, '-', 1) AS INTEGER) ASC
+    """, nativeQuery = true)
+    List<CourseEntity> getCoursesByDayAndGroup(@Param("day") String day,
+                                               @Param("group") String group);
 }
