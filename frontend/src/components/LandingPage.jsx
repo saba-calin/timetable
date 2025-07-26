@@ -81,7 +81,7 @@ export default function LandingPage() {
 
                 <button
                     onClick={fetchTimetable}
-                    className="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition"
+                    className="w-full bg-indigo-600 text-white font-semibold py-3 rounded-lg hover:bg-indigo-700 transition cursor-pointer"
                     disabled={loading}
                 >
                     {loading ? "Loading..." : "Get Today's Timetable"}
