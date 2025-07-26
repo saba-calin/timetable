@@ -15,8 +15,9 @@ public class CourseController {
 
     private final CourseService courseService;
 
-    @PostMapping
-    public ResponseEntity<List<CourseDto>> getCourses(@RequestBody RequestDto requestDto) {
-        return ResponseEntity.ok(this.courseService.getCoursesByGroupAndDay(requestDto));
+    @GetMapping
+    public ResponseEntity<List<CourseDto>> getCourses(@RequestParam(name = "semi-group") String semiGroup,
+                                                      @RequestParam(name = "day") String day) {
+        return ResponseEntity.ok(this.courseService.getCoursesByGroupAndDay(semiGroup, day));
     }
 }

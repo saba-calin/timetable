@@ -25,11 +25,9 @@ public class CourseService {
         this.courseRepository.deleteByGroupName(groupName);
     }
 
-    public List<CourseDto> getCoursesByGroupAndDay(RequestDto requestDto) {
-        String day = requestDto.getDay();
-        String semiGroup = requestDto.getSemiGroup();
-
+    public List<CourseDto> getCoursesByGroupAndDay(String semiGroup, String day) {
         List<CourseEntity> courses;
+
         if (semiGroup.contains("/")) {
             String group = semiGroup.contains("/") ? semiGroup.split("/")[0] : semiGroup;
             courses = this.courseRepository.getCoursesByDayAndGroupAndSemigroup(day, group, semiGroup);
