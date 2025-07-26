@@ -44,7 +44,7 @@ export default function LandingPage() {
         const dayNameRO = getToday();
 
         try {
-            const res = await axios.get(`http://localhost:8080/api/v1/course?semi-group=${group}&day=${dayNameRO}`);
+            const res = await axios.get(`https://timetable-latest.onrender.com/api/v1/course?semi-group=${group}&day=${dayNameRO}`);
             setTimetable(res.data);
             setDayName(convertDayROtoEN(dayNameRO));
             setTimetableGroup(group);
